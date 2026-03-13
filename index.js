@@ -3,15 +3,13 @@ import { CommandKit } from "commandkit";
 import { fileURLToPath } from "url";
 import path from "path";
 import { LavaShark } from "lavashark";
-import dotenv from "dotenv";
 import config from "./config.js";
 import mongoose from "mongoose";
 import GuildConfig from "./models/guildConfig.js";
-dotenv.config();
 
 // Connect to MongoDB
 await mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(config.mongodb_uri)
   .then(() => {
     console.log("Connected to MongoDB Instance.");
   })
@@ -28,6 +26,7 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
   ],
 });
+client.config = config;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -35,8 +34,6 @@ new CommandKit({
   client,
   commandsPath: path.join(__dirname, "commands"),
   eventsPath: path.join(__dirname, "events"),
-  devUserIds: config.devUserIds,
-  devGuildIds: config.devGuildIds,
   bulkRegister: true,
 });
 
@@ -97,10 +94,34 @@ client.lavashark.on("queueEnd", async (player) => {
   }
 });
 
+// ===== NODE AUTO RECONNECT SYSTEM =====
+
+const reconnectAttempts = new Map();
+
+client.lavashark.on("nodeConnect", async (node) => {
+  console.log(`[LavaShark] Node ${node.identifier} connected.`);
+  reconnectAttempts.delete(node.identifier);
+  const players = client.lavashark.players;
+
+  for (const player of players.values()) {
+    try {
+      await player.connect();
+      console.log(`Reconnected player in guild ${player.guildId}`);
+    } catch (err) {
+      console.error(`Failed to reconnect player:`, err.message);
+    }
+  }
+});
 client.lavashark.on("error", (node, err) => {
   console.error("[LavaShark]", `Error on node ${node.identifier}`, err.message);
 });
 
+client.lavashark.on("nodeRaw", (node, payload) => {
+  if (payload.op === "stats") {
+    console.log(`Players: ${payload.players} | CPU: ${payload.cpu.systemLoad}`);
+  }
+});
+
 client.on("raw", (packet) => client.lavashark.handleVoiceUpdate(packet));
 
-client.login(process.env.DISCORD_BOT_TOKEN);
+client.login(config.token);

@@ -1,6 +1,6 @@
 export default {
-  devUserIds: [""],
-  devGuildIds: [""],
+  token: "",
+  mongodb_uri: "",
   premiumCmds: {
     stayConnected: false,
   },

@@ -12,9 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "commandkit": "^0.1.10",
-    "discord.js": "^14.19.2",
-    "dotenv": "^16.5.0",
-    "lavashark": "^2.2.2",
-    "mongoose": "^8.14.1"
+    "discord.js": "^14.25.1",
+    "lavashark": "^2.3.1",
+    "mongoose": "^9.2.2"
   }
 }
