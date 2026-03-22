@@ -1,8 +1,15 @@
 export default {
-  token: "",
-  mongodb_uri: "",
+  devUserIds: [""],
+  devGuildIds: [""],
   premiumCmds: {
     stayConnected: false,
+    djMode: false,
+    announcements: false,
+    volumeControl: false,
+    loopMode: false,
+    playlists: false,
+    songRequests: false,
+    statistics: false,
   },
   supportGuildLink: "https://discord.gg/689PYf8C8B",
   emoji: {
