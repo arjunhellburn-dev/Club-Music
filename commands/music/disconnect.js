@@ -20,7 +20,7 @@ export default {
       embed.setColor("Red");
       if (!voiceChannel) {
         embed.setDescription(
-          "You need to be in a voice channel to use this command."
+          "You need to be in a voice channel to use this command.",
         );
         return interaction.editReply({
           embeds: [embed],
@@ -30,7 +30,7 @@ export default {
 
       if (voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
         embed.setDescription(
-          "You need to be in the same voice channel as me to use this command."
+          "You need to be in the same voice channel as me to use this command.",
         );
         return interaction.editReply({
           embeds: [embed],
@@ -47,7 +47,7 @@ export default {
           .has(PermissionsBitField.Flags.Speak)
       ) {
         embed.setDescription(
-          "I don't have permission to connect to this voice channel."
+          "I don't have permission to connect to this voice channel.",
         );
         return interaction.editReply({
           embeds: [embed],
@@ -81,7 +81,7 @@ export default {
       const embed = new EmbedBuilder();
       embed.setColor("Red");
       embed.setDescription(
-        "An error occurred while trying to disconnect. Please try again later."
+        "An error occurred while trying to disconnect. Please try again later.",
       );
       await interaction.editReply({
         embeds: [embed],

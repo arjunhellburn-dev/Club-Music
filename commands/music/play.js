@@ -5,7 +5,10 @@ export default {
     .setName("play")
     .setDescription("Play a song")
     .addStringOption((option) =>
-      option.setName("query").setDescription("The song to play").setRequired(true)
+      option
+        .setName("query")
+        .setDescription("The song to play")
+        .setRequired(true),
     )
     .addStringOption((option) =>
       option
@@ -13,13 +16,13 @@ export default {
         .setDescription("The source of the song")
         .addChoices(
           { name: "YouTube", value: "youtube" },
-          { name: "SoundCloud", value: "soundcloud" }
+          { name: "SoundCloud", value: "soundcloud" },
         )
-        .setRequired(false)
+        .setRequired(false),
     ),
 
   run: async ({ interaction }) => {
-    await interaction.deferReply();
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     const guild = interaction.guild;
     const member = interaction.member;
     const channel = member.voice?.channel;
@@ -33,7 +36,6 @@ export default {
       embed.setColor("Red");
       return interaction.editReply({
         embeds: [embed],
-        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -51,7 +53,6 @@ export default {
       embed.setColor("Red");
       return interaction.editReply({
         embeds: [embed],
-        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -88,7 +89,7 @@ export default {
     if (res.loadType === "playlist") {
       player.addTracks(res.tracks, interaction.user);
       embed.setDescription(
-        `Added \`${res.tracks.length}\` tracks from playlist \`${res.playlistInfo.name}\``
+        `Added \`${res.tracks.length}\` tracks from playlist \`${res.playlistInfo.name}\``,
       );
       embed.setColor("Blurple");
       interaction.editReply({ embeds: [embed] });

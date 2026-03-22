@@ -5,23 +5,23 @@ import {
   MessageFlags,
 } from "discord.js";
 import GuildConfig from "../../models/guildConfig.js";
-import config from "../../config.js";
 
 export default {
   data: new SlashCommandBuilder()
     .setName("stay-connected")
     .setDescription(
-      "Keep the bot connected to the voice channel even when no one is in it. (Premium only)"
+      "Keep the bot connected to the voice channel even when no one is in it. (Premium only)",
     )
     .addBooleanOption((option) =>
       option
         .setName("enabled")
         .setDescription("Enable or disable the stay connected feature.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageChannels),
 
-  run: async ({ interaction }) => {
+  run: async ({ interaction, client }) => {
+    const config = client.config;
     await interaction.deferReply();
     try {
       const enabled = interaction.options.getBoolean("enabled");
@@ -31,7 +31,7 @@ export default {
         .setColor("Red")
         .setTitle("Premium Feature")
         .setDescription(
-          "**This is a premium only feature.**\n\nPlease upgrade your plan to use this feature.\n**Run `/premium` to see the available plans.**"
+          "**This is a premium only feature.**\n\nPlease upgrade your plan to use this feature.\n**Run `/premium` to see the available plans.**",
         );
 
       if (!guildConfig) {
@@ -54,7 +54,7 @@ export default {
           .setDescription(
             `The stay connected feature is already **${
               enabled ? "enabled" : "disabled"
-            }** for this server.`
+            }** for this server.`,
           );
         return interaction.editReply({ embeds: [alreadySetEmbed] });
       }
@@ -66,7 +66,7 @@ export default {
         .setDescription(
           `The stay connected feature has been **${
             enabled ? "enabled" : "disabled"
-          }** for this server.`
+          }** for this server.`,
         )
         .setFooter({
           text: "Requested by " + interaction.user.username,
