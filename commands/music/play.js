@@ -1,14 +1,20 @@
-import { MessageFlags, SlashCommandBuilder, EmbedBuilder } from "discord.js";
+import {
+  MessageFlags,
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} from "discord.js";
+import config from "../../config.js";
+import GuildConfig from "../../models/guildConfig.js";
 
 export default {
   data: new SlashCommandBuilder()
     .setName("play")
     .setDescription("Play a song")
     .addStringOption((option) =>
-      option
-        .setName("query")
-        .setDescription("The song to play")
-        .setRequired(true),
+      option.setName("query").setDescription("The song to play").setRequired(true)
     )
     .addStringOption((option) =>
       option
@@ -16,13 +22,13 @@ export default {
         .setDescription("The source of the song")
         .addChoices(
           { name: "YouTube", value: "youtube" },
-          { name: "SoundCloud", value: "soundcloud" },
+          { name: "SoundCloud", value: "soundcloud" }
         )
-        .setRequired(false),
+        .setRequired(false)
     ),
 
   run: async ({ interaction }) => {
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    await interaction.deferReply();
     const guild = interaction.guild;
     const member = interaction.member;
     const channel = member.voice?.channel;
@@ -36,6 +42,7 @@ export default {
       embed.setColor("Red");
       return interaction.editReply({
         embeds: [embed],
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -53,6 +60,7 @@ export default {
       embed.setColor("Red");
       return interaction.editReply({
         embeds: [embed],
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -86,13 +94,73 @@ export default {
       return interaction.editReply({ embeds: [embed] });
     }
 
+    // Create music control buttons
+    const createMusicButtons = async () => {
+      const guildConfig = await GuildConfig.findOne({ guildId: guild.id });
+      const isPremium = guildConfig?.premium || false;
+
+      // Row 1: Basic controls
+      const row1 = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId("music_skip")
+          .setLabel("⏭️ Skip")
+          .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+          .setCustomId("music_queue")
+          .setLabel("📋 Queue")
+          .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+          .setCustomId("music_nowplaying")
+          .setLabel("🎵 Now Playing")
+          .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+          .setCustomId("music_disconnect")
+          .setLabel("⏹️ Stop")
+          .setStyle(ButtonStyle.Danger)
+      );
+
+      // Row 2: Premium features (if applicable)
+      if (isPremium) {
+        const row2 = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("music_loop")
+            .setLabel("🔁 Loop")
+            .setStyle(ButtonStyle.Secondary),
+
+          new ButtonBuilder()
+            .setCustomId("music_volume")
+            .setLabel("🔊 Volume")
+            .setStyle(ButtonStyle.Secondary),
+
+          new ButtonBuilder()
+            .setCustomId("music_playlist")
+            .setLabel("📝 Playlists")
+            .setStyle(ButtonStyle.Secondary),
+
+          new ButtonBuilder()
+            .setCustomId("music_stats")
+            .setLabel("📊 Stats")
+            .setStyle(ButtonStyle.Secondary)
+        );
+
+        return [row1, row2];
+      }
+
+      return [row1];
+    };
+
     if (res.loadType === "playlist") {
       player.addTracks(res.tracks, interaction.user);
       embed.setDescription(
-        `Added \`${res.tracks.length}\` tracks from playlist \`${res.playlistInfo.name}\``,
+        `Added \`${res.tracks.length}\` tracks from playlist \`${res.playlistInfo.name}\``
       );
       embed.setColor("Blurple");
-      interaction.editReply({ embeds: [embed] });
+
+      const buttons = await createMusicButtons();
+      interaction.editReply({ embeds: [embed], components: buttons });
     } else {
       const trackInfo = res.tracks[0];
       let thumbnail = "";
@@ -114,7 +182,8 @@ export default {
         iconURL: interaction.user.displayAvatarURL(),
       });
 
-      interaction.editReply({ embeds: [embed] });
+      const buttons = await createMusicButtons();
+      interaction.editReply({ embeds: [embed], components: buttons });
       await player.addTracks(trackInfo, interaction.user);
     }
 

@@ -19,7 +19,7 @@ const miscCommands = [
 const musicCommands = [
   {
     name: "play",
-    description: "Play a song from YouTube.",
+    description: "Play a song with ⏭️ Skip, 📋 Queue, 🎵 Now Playing, ⏹️ Stop buttons!",
   },
   {
     name: "join",
@@ -40,6 +40,54 @@ const musicCommands = [
   {
     name: "queue",
     description: "Show the current song queue.",
+  },
+];
+
+const premiumCommands = [
+  {
+    name: "stay-connected",
+    description: "Keep the bot connected when voice channel is empty.",
+    premium: true,
+  },
+  {
+    name: "dj-mode",
+    description: "Restrict music commands to members with a specific DJ role.",
+    premium: true,
+  },
+  {
+    name: "announcements",
+    description: "Configure song announcements in a dedicated channel.",
+    premium: true,
+  },
+  {
+    name: "volume",
+    description: "Control bot audio volume (1-200%).",
+    premium: true,
+  },
+  {
+    name: "loop",
+    description: "Set loop mode: Off, Song, or Queue.",
+    premium: true,
+  },
+  {
+    name: "playlist",
+    description: "Create and manage custom playlists.",
+    premium: true,
+  },
+  {
+    name: "song-requests",
+    description: "Enable song request system for your server.",
+    premium: true,
+  },
+  {
+    name: "stats",
+    description: "View music statistics and top songs.",
+    premium: true,
+  },
+  {
+    name: "premium-settings",
+    description: "View and manage all premium features.",
+    premium: true,
   },
 ];
 
@@ -77,6 +125,10 @@ export default async (interaction) => {
         selectedCommands = musicCommands;
         categoryTitle = `${config.emoji.music} Music Commands`;
         break;
+      case "premium":
+        selectedCommands = premiumCommands;
+        categoryTitle = `${config.emoji.premium} Premium Features`;
+        break;
       case "settings":
         selectedCommands = settingsCommands;
         categoryTitle = `${config.emoji.settings} Settings Commands`;
@@ -95,7 +147,7 @@ export default async (interaction) => {
       .setTitle(categoryTitle)
       .addFields(
         selectedCommands.map((cmd) => ({
-          name: `\`/${cmd.name}\` ${cmd.premium ? (config.emoji.premium || "⭐") : ""}`,
+          name: `\`/${cmd.name}\` / \`c${cmd.name}\` ${cmd.premium ? (config.emoji.premium || "⭐") : ""}`,
           value: cmd.description,
           inline: false,
         }))
@@ -111,4 +163,4 @@ export default async (interaction) => {
   }
 };
 
-export { miscCommands };
+export { miscCommands, premiumCommands };

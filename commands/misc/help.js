@@ -29,6 +29,11 @@ export default {
           .setValue("music")
           .setEmoji(config.emoji.music),
         new StringSelectMenuOptionBuilder()
+          .setLabel("Premium")
+          .setDescription("See premium features and commands")
+          .setValue("premium")
+          .setEmoji(config.emoji.premium),
+        new StringSelectMenuOptionBuilder()
           .setLabel("Settings")
           .setDescription("See a list of settings commands")
           .setValue("settings")

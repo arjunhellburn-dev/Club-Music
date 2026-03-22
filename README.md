@@ -13,6 +13,7 @@ It streams music from multiple sources like YouTube and Spotify, and is Lavalink
 - 📶 Lavalink integration  
 - 🛠️ Easy configuration and self-hosting  
 - 🧩 Modular and scalable codebase
+- 📝 Dual command support: Slash commands (`/play`) and text prefix commands (`cplay`)
 
 ---
 
@@ -77,14 +78,6 @@ To keep your custom changes safe while still pulling updates:
 ```bash
 git pull origin main
 ```
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
----
 
 ## 🤝 Contributing
 
