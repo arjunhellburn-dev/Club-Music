@@ -1,4 +1,4 @@
-# 🎵 Plumpy Music - A Discord Music Bot
+# 🎵 Club Music - A Discord Music Bot
 
 **TrustMusic** is a powerful and customizable Discord music bot built using [discord.js](https://discord.js.org/).  
 It streams music from multiple sources like YouTube and Spotify, and is Lavalink-ready for high-performance audio.
